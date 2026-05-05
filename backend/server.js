@@ -113,23 +113,16 @@ app.delete("/customers/:username", (req, res) => {
 });
 
 // 🟢 STORES with OWNER name
+// 🟢 STORES
 app.get("/stores", (req, res) => {
-  const sql = `
-    SELECT 
-      s.store_id,
-      s.namee,
-      s.owner_id,
-      o.owner_username
-    FROM store_tab s
-    LEFT JOIN owner_tab o ON s.owner_id = o.owner_id
-  `;
-
-  db.query(sql, (err, result) => {
-    if (err) return res.status(500).json(err);
+  db.query("SELECT * FROM store_tab", (err, result) => {
+    if (err) {
+      console.log("Stores error:", err);
+      return res.status(500).json(err);
+    }
     res.json(result);
   });
 });
-
 // 🟢 ADD STORE
 app.post("/stores", (req, res) => {
   const { namee, owner_id } = req.body;
