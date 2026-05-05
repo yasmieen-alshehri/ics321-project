@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>E-Commerce DB System</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="app">
+
+  <aside class="sidebar">
+    <div class="sidebar-logo">
+      <span class="logo-icon">⬡</span>
+      <span class="logo-text">EcomDB</span>
+    </div>
+
+    <nav class="sidebar-nav">
+      <button class="nav-btn active" data-page="dashboard"><span class="nav-icon">◈</span> Dashboard</button>
+      <button class="nav-btn" data-page="products"><span class="nav-icon">◉</span> Products</button>
+      <button class="nav-btn" data-page="customers"><span class="nav-icon">◎</span> Customers</button>
+      <button class="nav-btn" data-page="stores"><span class="nav-icon">◫</span> Stores</button>
+      <button class="nav-btn" data-page="orders"><span class="nav-icon">◧</span> Orders</button>
+      <button class="nav-btn" data-page="reviews"><span class="nav-icon">◑</span> Reviews</button>
+      <button class="nav-btn" data-page="reports"><span class="nav-icon">◐</span> Reports</button>
+      <button class="nav-btn" data-page="admins"><span class="nav-icon">◆</span> Admins & Logs</button>
+    </nav>
+
+    <div class="sidebar-footer">
+      <div class="db-status">
+        <span class="status-dot" id="statusDot"></span>
+        <span id="statusText">Connecting...</span>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- Dashboard -->
+    <section class="page active" id="page-dashboard">
+      <div class="page-header">
+        <h1>Dashboard</h1>
+        <p>Database overview</p>
+      </div>
+
+      <div class="stats-grid" id="statsGrid">
+        <div class="stat-card loading">
+          <div class="stat-num" id="stat-products">—</div>
+          <div class="stat-label">Products</div>
+          <div class="stat-icon">◉</div>
+        </div>
+
+        <div class="stat-card loading">
+          <div class="stat-num" id="stat-customers">—</div>
+          <div class="stat-label">Customers</div>
+          <div class="stat-icon">◎</div>
+        </div>
+
+        <div class="stat-card loading">
+          <div class="stat-num" id="stat-stores">—</div>
+          <div class="stat-label">Stores</div>
+          <div class="stat-icon">◫</div>
+        </div>
+
+        <div class="stat-card loading">
+          <div class="stat-num" id="stat-orders">—</div>
+          <div class="stat-label">Orders</div>
+          <div class="stat-icon">◧</div>
+        </div>
+
+        <div class="stat-card loading">
+          <div class="stat-num" id="stat-reviews">—</div>
+          <div class="stat-label">Reviews</div>
+          <div class="stat-icon">◑</div>
+        </div>
+
+        <div class="stat-card loading">
+          <div class="stat-num" id="stat-reports">—</div>
+          <div class="stat-label">Reports</div>
+          <div class="stat-icon">◐</div>
+        </div>
+
+        <!-- New Advanced Dashboard Cards -->
+        <div class="stat-card loading">
+          <div class="stat-num" id="stat-revenue">—</div>
+          <div class="stat-label">Total Revenue</div>
+          <div class="stat-icon">💰</div>
+        </div>
+
+        <div class="stat-card loading">
+          <div class="stat-num" id="stat-low-stock">—</div>
+          <div class="stat-label">Low Stock</div>
+          <div class="stat-icon">⚠</div>
+        </div>
+
+        <div class="stat-card loading">
+          <div class="stat-num" id="stat-pending-orders">—</div>
+          <div class="stat-label">Pending Orders</div>
+          <div class="stat-icon">◧</div>
+        </div>
+
+        <div class="stat-card loading">
+          <div class="stat-num" id="stat-open-reports">—</div>
+          <div class="stat-label">Open Reports</div>
+          <div class="stat-icon">◐</div>
+        </div>
+      </div>
+
+      <div class="recent-section">
+        <h2>Recent Orders</h2>
+        <div class="table-wrap" id="recentOrders">
+          <div class="loading-row">Loading...</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Products -->
+    <section class="page" id="page-products">
+      <div class="page-header">
+        <h1>Products</h1>
+        <p>All products in the database</p>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" class="search-input" id="productSearch"
+          placeholder="Search for a product..."
+          oninput="filterTable('productTable', this.value)" />
+        <button class="btn-add" onclick="showModal('addProductModal')">+ Add Product</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table" id="productTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Store</th>
+              <th>Price</th>
+              <th>Units</th>
+              <th>Description</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="productBody">
+            <tr><td colspan="7" class="loading-row">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Customers -->
+    <section class="page" id="page-customers">
+      <div class="page-header">
+        <h1>Customers</h1>
+        <p>Customer data and profiles</p>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" class="search-input"
+          placeholder="Search for a customer..."
+          oninput="filterTable('customerTable', this.value)" />
+        <button class="btn-add" onclick="showModal('addCustomerModal')">+ Add Customer</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table" id="customerTable">
+          <thead>
+            <tr>
+              <th>Username</th>
+              <th>Address</th>
+              <th>Bio</th>
+              <th>Phone</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="customerBody">
+            <tr><td colspan="5" class="loading-row">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Stores -->
+    <section class="page" id="page-stores">
+      <div class="page-header">
+        <h1>Stores</h1>
+        <p>Stores and their owners</p>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" class="search-input"
+          placeholder="Search for a store..."
+          oninput="filterTable('storeTable', this.value)" />
+        <button class="btn-add" onclick="showModal('addStoreModal')">+ Add Store</button>
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table" id="storeTable">
+          <thead>
+            <tr>
+              <th>Store ID</th>
+              <th>Name</th>
+              <th>Owner</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="storeBody">
+            <tr><td colspan="4" class="loading-row">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Orders -->
+    <section class="page" id="page-orders">
+      <div class="page-header">
+        <h1>Orders</h1>
+        <p>Orders and their details</p>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" class="search-input"
+          placeholder="Search for an order..."
+          oninput="filterTable('orderTable', this.value)" />
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table" id="orderTable">
+          <thead>
+            <tr>
+              <th>Order ID</th>
+              <th>Customer</th>
+              <th>Store</th>
+              <th>Status</th>
+              <th>Date</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="orderBody">
+            <tr><td colspan="6" class="loading-row">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Reviews -->
+    <section class="page" id="page-reviews">
+      <div class="page-header">
+        <h1>Reviews</h1>
+        <p>Customer reviews for products</p>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" class="search-input"
+          placeholder="Search reviews..."
+          oninput="filterTable('reviewTable', this.value)" />
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table" id="reviewTable">
+          <thead>
+            <tr>
+              <th>Product</th>
+              <th>Customer</th>
+              <th>Rating</th>
+              <th>Comment</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="reviewBody">
+            <tr><td colspan="5" class="loading-row">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Reports -->
+    <section class="page" id="page-reports">
+      <div class="page-header">
+        <h1>Reports</h1>
+        <p>Customer submitted reports</p>
+      </div>
+
+      <div class="toolbar">
+        <input type="text" class="search-input"
+          placeholder="Search reports..."
+          oninput="filterTable('reportTable', this.value)" />
+      </div>
+
+      <div class="table-wrap">
+        <table class="data-table" id="reportTable">
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Customer</th>
+              <th>Store</th>
+              <th>Issue</th>
+              <th>Status</th>
+              <th>Date</th>
+            </tr>
+          </thead>
+          <tbody id="reportBody">
+            <tr><td colspan="6" class="loading-row">Loading...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Admins & Logs -->
+    <section class="page" id="page-admins">
+      <div class="page-header">
+        <h1>Admins & Logs</h1>
+        <p>Admins and action logs</p>
+      </div>
+
+      <div class="two-col">
+        <div>
+          <h2>Admins</h2>
+          <div class="table-wrap">
+            <table class="data-table" id="adminTable">
+              <thead>
+                <tr>
+                  <th>Admin ID</th>
+                  <th>Password</th>
+                </tr>
+              </thead>
+              <tbody id="adminBody">
+                <tr><td colspan="2" class="loading-row">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div>
+          <h2>Action Logs</h2>
+          <div class="table-wrap">
+            <table class="data-table" id="logTable">
+              <thead>
+                <tr>
+                  <th>Log ID</th>
+                  <th>Admin</th>
+                  <th>Action</th>
+                  <th>Time</th>
+                </tr>
+              </thead>
+              <tbody id="logBody">
+                <tr><td colspan="4" class="loading-row">Loading...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<!-- Add Product Modal -->
+<div class="modal-overlay" id="addProductModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add New Product</h3>
+      <button class="modal-close" onclick="closeModal('addProductModal')">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <input type="number" id="new-product-store" placeholder="Store ID" />
+      <input type="text" id="new-product-name" placeholder="Product Name" />
+      <input type="number" id="new-product-price" placeholder="Price" step="0.01" />
+      <input type="number" id="new-product-units" placeholder="Available Units" />
+      <textarea id="new-product-desc" placeholder="Description"></textarea>
+      <button class="btn-submit" onclick="addProduct()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Edit Product Modal -->
+<div class="modal-overlay" id="editProductModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Edit Product</h3>
+      <button class="modal-close" onclick="closeModal('editProductModal')">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <input type="hidden" id="edit-product-id" />
+      <input type="text" id="edit-product-name" placeholder="Product Name" />
+      <input type="number" id="edit-product-price" placeholder="Price" step="0.01" />
+      <input type="number" id="edit-product-units" placeholder="Available Units" />
+      <textarea id="edit-product-desc" placeholder="Description"></textarea>
+      <button class="btn-submit" onclick="saveEditProduct()">Update</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Customer Modal -->
+<div class="modal-overlay" id="addCustomerModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add New Customer</h3>
+      <button class="modal-close" onclick="closeModal('addCustomerModal')">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <input type="text" id="new-cust-username" placeholder="Username" />
+      <input type="password" id="new-cust-pass" placeholder="Password" />
+      <input type="text" id="new-cust-address" placeholder="Address" />
+      <input type="text" id="new-cust-phone" placeholder="Phone Number" />
+      <textarea id="new-cust-bio" placeholder="Bio"></textarea>
+      <button class="btn-submit" onclick="addCustomer()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Add Store Modal -->
+<div class="modal-overlay" id="addStoreModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Add New Store</h3>
+      <button class="modal-close" onclick="closeModal('addStoreModal')">✕</button>
+    </div>
+
+    <div class="modal-body">
+      <input type="text" id="new-store-name" placeholder="Store Name" />
+      <input type="number" id="new-store-owner" placeholder="Owner ID" />
+      <button class="btn-submit" onclick="addStore()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- Order Details Modal -->
+<div class="modal-overlay" id="orderDetailModal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3>Order Details</h3>
+      <button class="modal-close" onclick="closeModal('orderDetailModal')">✕</button>
+    </div>
+
+    <div class="modal-body" id="orderDetailBody">
+      Loading...
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
