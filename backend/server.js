@@ -1,37 +1,26 @@
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
-const path = require("path");
-require("dotenv").config({ path: path.join(__dirname, ".env") });
+require("dotenv").config();
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const requiredDbEnv = ["DB_HOST", "DB_PORT", "DB_USER", "DB_PASSWORD", "DB_NAME"];
-const missingDbEnv = requiredDbEnv.filter(name => !process.env[name]);
-
-if (missingDbEnv.length > 0) {
-  console.error(`Missing required database environment variables: ${missingDbEnv.join(", ")}`);
-  process.exit(1);
-}
-
 const db = mysql.createPool({
   host: process.env.DB_HOST,
-  port: Number(process.env.DB_PORT),
+  port: process.env.DB_PORT,
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
-  database: process.env.DB_NAME,
-  waitForConnections: true,
-  connectionLimit: 10,
-  queueLimit: 0
+  database: process.env.DB_NAME
 });
 
-db.getConnection((err, connection) => {
-  if (err) console.log(err);
-  else {
-    console.log("Connected to MySQL");
-    connection.release();
+db.getConnection((err, conn) => {
+  if (err) {
+    console.log("DB ERROR ❌", err.message);
+  } else {
+    console.log("Connected to MySQL ✅");
+    conn.release();
   }
 });
 
@@ -324,5 +313,5 @@ app.get("/dashboard/stats", (req, res) => {
 });
 
 app.listen(5000, () => {
-  console.log("Server running on http://localhost:5000");
+  console.log("Server running 🚀");
 });
