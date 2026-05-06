@@ -1,22 +1,38 @@
 const express = require("express");
 const mysql = require("mysql2");
 const cors = require("cors");
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
-  host: "trolley.proxy.rlwy.net",
-  port: 16735,
-  user: "root",
-  password: "ZlgGnbeSIJFUJIprRGQWhHWMDcqCzXgs",
-  database: "ecommerce_db"
+const requiredDbEnv = ["DB_HOST", "DB_PORT", "DB_USER", "DB_PASSWORD", "DB_NAME"];
+const missingDbEnv = requiredDbEnv.filter(name => !process.env[name]);
+
+if (missingDbEnv.length > 0) {
+  console.error(`Missing required database environment variables: ${missingDbEnv.join(", ")}`);
+  process.exit(1);
+}
+
+const db = mysql.createPool({
+  host: process.env.DB_HOST,
+  port: Number(process.env.DB_PORT),
+  user: process.env.DB_USER,
+  password: process.env.DB_PASSWORD,
+  database: process.env.DB_NAME,
+  waitForConnections: true,
+  connectionLimit: 10,
+  queueLimit: 0
 });
 
-db.connect(err => {
+db.getConnection((err, connection) => {
   if (err) console.log(err);
-  else console.log("Connected ✅");
+  else {
+    console.log("Connected to MySQL");
+    connection.release();
+  }
 });
 
 // 🟢 PRODUCTS with STORE name
@@ -308,5 +324,5 @@ app.get("/dashboard/stats", (req, res) => {
 });
 
 app.listen(5000, () => {
-  console.log("Server running 🚀");
+  console.log("Server running on http://localhost:5000");
 });

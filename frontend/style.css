@@ -16,7 +16,7 @@
   --warning: #fbbf24;
   --danger: #f87171;
   --info: #60a5fa;
-  --font: 'IBM Plex Sans Arabic', sans-serif;
+  --font: 'Inter', 'Segoe UI', Arial, sans-serif;
   --mono: 'JetBrains Mono', monospace;
   --radius: 10px;
   --transition: 0.2s ease;
@@ -93,7 +93,7 @@ body {
   font-size: 14px;
   cursor: pointer;
   transition: all var(--transition);
-  text-align: right;
+  text-align: left;
 }
 
 .nav-btn:hover {
@@ -263,7 +263,7 @@ body {
   font-size: 14px;
   outline: none;
   transition: border-color var(--transition);
-  direction: rtl;
+  direction: ltr;
 }
 
 .search-input:focus {
@@ -313,7 +313,7 @@ body {
 
 .data-table th {
   padding: 12px 16px;
-  text-align: right;
+  text-align: left;
   font-size: 11px;
   font-weight: 600;
   text-transform: uppercase;
@@ -477,7 +477,7 @@ body {
   font-size: 14px;
   outline: none;
   transition: border-color var(--transition);
-  direction: rtl;
+  direction: ltr;
   width: 100%;
 }
 

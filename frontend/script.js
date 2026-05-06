@@ -52,7 +52,7 @@ async function apiPost(endpoint, data) {
 
     return await res.json();
   } catch (e) {
-    showToast("خطأ في الاتصال بالخادم", "error");
+    showToast("Unable to connect to the server", "error");
     return null;
   }
 }
@@ -67,7 +67,7 @@ async function apiPut(endpoint, data) {
 
     return await res.json();
   } catch (e) {
-    showToast("خطأ في الاتصال بالخادم", "error");
+    showToast("Unable to connect to the server", "error");
     return null;
   }
 }
@@ -77,7 +77,7 @@ async function apiDelete(endpoint) {
     const res = await fetch(API + endpoint, { method: "DELETE" });
     return await res.json();
   } catch (e) {
-    showToast("خطأ في الاتصال بالخادم", "error");
+    showToast("Unable to connect to the server", "error");
     return null;
   }
 }
@@ -226,7 +226,7 @@ async function loadProducts() {
   const tbody = document.getElementById("productBody");
 
   if (!data) {
-    tbody.innerHTML = '<tr><td colspan="7" class="loading-row">فشل التحميل</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="7" class="loading-row">Failed to load</td></tr>';
     return;
   }
 
@@ -251,7 +251,7 @@ async function loadProducts() {
         <button 
           class="btn-action btn-delete" 
           onclick="deleteProduct(${p.product_id})">
-          حذف
+          Delete
         </button>
       </td>
     </tr>
@@ -268,14 +268,14 @@ async function addProduct() {
   };
 
   if (!body.namee || !body.store_id || !body.price) {
-    showToast("يرجى ملء الحقول المطلوبة", "error");
+    showToast("Please fill in the required fields", "error");
     return;
   }
 
   const res = await apiPost("/products", body);
 
   if (res) {
-    showToast("تم إضافة المنتج ✓", "success");
+    showToast("Product added successfully", "success");
     closeModal("addProductModal");
     clearAddProductForm();
     loadProducts();
@@ -304,14 +304,14 @@ async function saveEditProduct() {
   };
 
   if (!body.namee || !body.price) {
-    showToast("يرجى ملء الحقول المطلوبة", "error");
+    showToast("Please fill in the required fields", "error");
     return;
   }
 
   const res = await apiPut(`/products/${id}`, body);
 
   if (res) {
-    showToast("تم تحديث المنتج ✓", "success");
+    showToast("Product updated successfully", "success");
     closeModal("editProductModal");
     loadProducts();
     loadDashboard();
@@ -319,12 +319,12 @@ async function saveEditProduct() {
 }
 
 async function deleteProduct(id) {
-  if (!confirm("هل تريد حذف هذا المنتج؟")) return;
+  if (!confirm("Delete this product?")) return;
 
   const res = await apiDelete(`/products/${id}`);
 
   if (res) {
-    showToast("تم الحذف", "success");
+    showToast("Deleted successfully", "success");
     loadProducts();
     loadDashboard();
   }
@@ -344,7 +344,7 @@ async function loadCustomers() {
   const tbody = document.getElementById("customerBody");
 
   if (!data) {
-    tbody.innerHTML = '<tr><td colspan="5" class="loading-row">فشل التحميل</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="loading-row">Failed to load</td></tr>';
     return;
   }
 
@@ -358,7 +358,7 @@ async function loadCustomers() {
         <button 
           class="btn-action btn-delete" 
           onclick="deleteCustomer('${c.c_username}')">
-          حذف
+          Delete
         </button>
       </td>
     </tr>
@@ -375,14 +375,14 @@ async function addCustomer() {
   };
 
   if (!body.c_username || !body.passwordd || !body.address) {
-    showToast("يرجى ملء الحقول المطلوبة", "error");
+    showToast("Please fill in the required fields", "error");
     return;
   }
 
   const res = await apiPost("/customers", body);
 
   if (res) {
-    showToast("تم إضافة العميل ✓", "success");
+    showToast("Customer added successfully", "success");
     closeModal("addCustomerModal");
     loadCustomers();
     loadDashboard();
@@ -390,12 +390,12 @@ async function addCustomer() {
 }
 
 async function deleteCustomer(username) {
-  if (!confirm("هل تريد حذف هذا العميل؟")) return;
+  if (!confirm("Delete this customer?")) return;
 
   const res = await apiDelete(`/customers/${username}`);
 
   if (res) {
-    showToast("تم الحذف", "success");
+    showToast("Deleted successfully", "success");
     loadCustomers();
     loadDashboard();
   }
@@ -407,7 +407,7 @@ async function loadStores() {
   const tbody = document.getElementById("storeBody");
 
   if (!data) {
-    tbody.innerHTML = '<tr><td colspan="4" class="loading-row">فشل التحميل</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="4" class="loading-row">Failed to load</td></tr>';
     return;
   }
 
@@ -420,7 +420,7 @@ async function loadStores() {
         <button 
           class="btn-action btn-delete" 
           onclick="deleteStore(${s.store_id})">
-          حذف
+          Delete
         </button>
       </td>
     </tr>
@@ -434,14 +434,14 @@ async function addStore() {
   };
 
   if (!body.namee || !body.owner_id) {
-    showToast("يرجى ملء الحقول المطلوبة", "error");
+    showToast("Please fill in the required fields", "error");
     return;
   }
 
   const res = await apiPost("/stores", body);
 
   if (res) {
-    showToast("تم إضافة المتجر ✓", "success");
+    showToast("Store added successfully", "success");
     closeModal("addStoreModal");
     loadStores();
     loadDashboard();
@@ -449,12 +449,12 @@ async function addStore() {
 }
 
 async function deleteStore(id) {
-  if (!confirm("هل تريد حذف هذا المتجر؟")) return;
+  if (!confirm("Delete this store?")) return;
 
   const res = await apiDelete(`/stores/${id}`);
 
   if (res) {
-    showToast("تم الحذف", "success");
+    showToast("Deleted successfully", "success");
     loadStores();
     loadDashboard();
   }
@@ -466,7 +466,7 @@ async function loadOrders() {
   const tbody = document.getElementById("orderBody");
 
   if (!data) {
-    tbody.innerHTML = '<tr><td colspan="6" class="loading-row">فشل التحميل</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Failed to load</td></tr>';
     return;
   }
 
@@ -485,7 +485,7 @@ async function loadOrders() {
       <td>${formatDate(o.order_date)}</td>
       <td>
         <button class="btn-action" onclick="viewOrderDetails(${o.order_id})">
-          تفاصيل
+          Details
         </button>
       </td>
     </tr>
@@ -496,7 +496,7 @@ async function updateOrderStatus(orderId, status) {
   const res = await apiPut(`/orders/${orderId}/status`, { status });
 
   if (res) {
-    showToast("تم تحديث حالة الطلب ✓", "success");
+    showToast("Order status updated successfully", "success");
     loadOrders();
     loadDashboard();
   }
@@ -511,7 +511,7 @@ async function viewOrderDetails(orderId) {
   const data = await apiFetch(`/orders/${orderId}/details`);
 
   if (!data || data.length === 0) {
-    body.innerHTML = "لا توجد تفاصيل";
+    body.innerHTML = "No details available";
     return;
   }
 
@@ -551,7 +551,7 @@ async function loadReviews() {
   const tbody = document.getElementById("reviewBody");
 
   if (!data) {
-    tbody.innerHTML = '<tr><td colspan="5" class="loading-row">فشل التحميل</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="5" class="loading-row">Failed to load</td></tr>';
     return;
   }
 
@@ -572,7 +572,7 @@ async function loadReports() {
   const tbody = document.getElementById("reportBody");
 
   if (!data) {
-    tbody.innerHTML = '<tr><td colspan="6" class="loading-row">فشل التحميل</td></tr>';
+    tbody.innerHTML = '<tr><td colspan="6" class="loading-row">Failed to load</td></tr>';
     return;
   }
 
@@ -598,7 +598,7 @@ async function updateReportStatus(reportId, status) {
   const res = await apiPut(`/reports/${reportId}/status`, { status });
 
   if (res) {
-    showToast("تم تحديث حالة التقرير ✓", "success");
+    showToast("Report status updated successfully", "success");
     loadReports();
     loadDashboard();
   }
@@ -644,9 +644,9 @@ function truncate(str, n) {
 function formatDate(d) {
   if (!d) return "—";
 
-  return new Date(d).toLocaleDateString("ar-SA", {
+  return new Date(d).toLocaleDateString("en-US", {
     year: "numeric",
-    month: "short",
+    month: "long",
     day: "numeric"
   });
 }
@@ -654,8 +654,8 @@ function formatDate(d) {
 function formatTimestamp(ts) {
   if (!ts) return "—";
 
-  return new Date(ts).toLocaleString("ar-SA", {
-    month: "short",
+  return new Date(ts).toLocaleString("en-US", {
+    month: "long",
     day: "numeric",
     hour: "2-digit",
     minute: "2-digit"
