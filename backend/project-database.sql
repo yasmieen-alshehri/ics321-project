@@ -48,9 +48,11 @@ DROP TABLE IF EXISTS `customer_tab`;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `customer_tab` (
   `c_username` varchar(50) NOT NULL,
+  `email` varchar(100) DEFAULT NULL,
   `passwordd` varchar(50) NOT NULL,
   `address` varchar(4000) NOT NULL,
-  PRIMARY KEY (`c_username`)
+  PRIMARY KEY (`c_username`),
+  UNIQUE KEY `uq_customer_email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -60,7 +62,7 @@ CREATE TABLE `customer_tab` (
 
 LOCK TABLES `customer_tab` WRITE;
 /*!40000 ALTER TABLE `customer_tab` DISABLE KEYS */;
-INSERT INTO `customer_tab` VALUES ('amira_khalid','Amira#456','Dubai, UAE'),('layla_mohammed','Layla@2024!','Riyadh, Saudi Arabia'),('nadia_ibrahim','Nadia$789','Cairo, Egypt');
+INSERT INTO `customer_tab` VALUES ('amira_khalid','amira@example.com','Amira#456','Dubai, UAE'),('layla_mohammed','layla@example.com','Layla@2024!','Riyadh, Saudi Arabia'),('nadia_ibrahim','nadia@example.com','Nadia$789','Cairo, Egypt');
 /*!40000 ALTER TABLE `customer_tab` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -136,6 +138,7 @@ CREATE TABLE `order_tab` (
   `store_id` int NOT NULL,
   `status` varchar(50) NOT NULL DEFAULT 'pending',
   `order_date` date NOT NULL,
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`order_id`),
   KEY `fk_ord_cust` (`c_username`),
   KEY `fk_ord_store` (`store_id`),
@@ -150,7 +153,7 @@ CREATE TABLE `order_tab` (
 
 LOCK TABLES `order_tab` WRITE;
 /*!40000 ALTER TABLE `order_tab` DISABLE KEYS */;
-INSERT INTO `order_tab` VALUES (1001,'layla_mohammed',2,'Delivered','2024-02-11'),(1002,'amira_khalid',3,'Shipped','2024-02-15'),(1003,'nadia_ibrahim',1,'Pending','2024-02-20'),(1004,'layla_mohammed',1,'Delivered','2024-02-25');
+INSERT INTO `order_tab` VALUES (1001,'layla_mohammed',2,'Delivered','2024-02-11','2024-02-11 06:00:00'),(1002,'amira_khalid',3,'Shipped','2024-02-15','2024-02-15 11:30:00'),(1003,'nadia_ibrahim',1,'Pending','2024-02-20','2024-02-20 07:00:00'),(1004,'layla_mohammed',1,'Delivered','2024-02-25','2024-02-25 10:00:00');
 /*!40000 ALTER TABLE `order_tab` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -165,8 +168,11 @@ CREATE TABLE `owner_tab` (
   `owner_id` int NOT NULL AUTO_INCREMENT,
   `username` varchar(50) NOT NULL,
   `passwordd` varchar(50) NOT NULL,
+  `owner_phone` varchar(20) DEFAULT NULL,
+  `owner_email` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`owner_id`),
-  UNIQUE KEY `username` (`username`)
+  UNIQUE KEY `username` (`username`),
+  UNIQUE KEY `uq_owner_email` (`owner_email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -176,7 +182,7 @@ CREATE TABLE `owner_tab` (
 
 LOCK TABLES `owner_tab` WRITE;
 /*!40000 ALTER TABLE `owner_tab` DISABLE KEYS */;
-INSERT INTO `owner_tab` VALUES (1,'sarah_ahmed','Sarah@123'),(2,'fatima_ali','Fatima@456'),(3,'nora_hassan','Nora@789');
+INSERT INTO `owner_tab` VALUES (1,'sarah_ahmed','Sarah@123','+966500000000','sarah@example.com'),(2,'fatima_ali','Fatima@456','+966511111111','fatima@example.com'),(3,'nora_hassan','Nora@789','+966522222222','nora@example.com');
 /*!40000 ALTER TABLE `owner_tab` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -280,13 +286,20 @@ CREATE TABLE `review_tab` (
   `product_id` int NOT NULL,
   `review_number` int NOT NULL,
   `c_username` varchar(50) DEFAULT NULL,
+  `order_id` int DEFAULT NULL,
+  `store_id` int DEFAULT NULL,
   `comment_text` varchar(4000) DEFAULT NULL,
   `review_date` date NOT NULL,
   `rate` int DEFAULT NULL,
   PRIMARY KEY (`product_id`,`review_number`),
+  UNIQUE KEY `uq_review_customer_order_product` (`c_username`,`order_id`,`product_id`),
   KEY `fk_rev_cust` (`c_username`),
+  KEY `fk_rev_order` (`order_id`),
+  KEY `fk_rev_store` (`store_id`),
   CONSTRAINT `fk_rev_cust` FOREIGN KEY (`c_username`) REFERENCES `customer_tab` (`c_username`) ON DELETE CASCADE,
+  CONSTRAINT `fk_rev_order` FOREIGN KEY (`order_id`) REFERENCES `order_tab` (`order_id`) ON DELETE SET NULL,
   CONSTRAINT `fk_rev_prod` FOREIGN KEY (`product_id`) REFERENCES `product_tab` (`product_id`) ON DELETE CASCADE,
+  CONSTRAINT `fk_rev_store` FOREIGN KEY (`store_id`) REFERENCES `store_tab` (`store_id`) ON DELETE SET NULL,
   CONSTRAINT `review_tab_chk_1` CHECK ((`rate` between 1 and 5))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -297,7 +310,7 @@ CREATE TABLE `review_tab` (
 
 LOCK TABLES `review_tab` WRITE;
 /*!40000 ALTER TABLE `review_tab` DISABLE KEYS */;
-INSERT INTO `review_tab` VALUES (201,1,'layla_mohammed','Absolutely love my new iPhone!','2024-02-12',5),(301,1,'amira_khalid','Beautiful handbag, great quality!','2024-02-18',5);
+INSERT INTO `review_tab` VALUES (201,1,'layla_mohammed',1001,2,'Absolutely love my new iPhone!','2024-02-12',5),(301,1,'amira_khalid',1002,3,'Beautiful handbag, great quality!','2024-02-18',5);
 /*!40000 ALTER TABLE `review_tab` ENABLE KEYS */;
 UNLOCK TABLES;
 
